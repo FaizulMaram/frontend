@@ -72,7 +72,6 @@ const Navbar = () => {
           </div>
         )}
       </div>
-
       <div className="flex gap-4 items-center">
         <Link to="/cart">
           <IoCartSharp className="text-2xl text-gray-700 hover:text-black cursor-pointer" />

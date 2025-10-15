@@ -1,5 +1,6 @@
 import Navbar from "../components/Navbar/Navbar";
 import BackPage from "../components/Shared/BackPage";
+import GoPage from "../components/Shared/GoPage";
 import { Button } from "../components/Shared/Button";
 import productdata from "../DummyData/data";
 import { useParams, Link } from "react-router-dom";
@@ -47,6 +48,7 @@ const ProductDetail = () => {
                 text="Add to Cart"
                 className="bg-black font-medium py-2 px-6 rounded-lg w-fit transition duration-200"
               />
+
               <Button
                 text="View Cart"
                 className="bg-gray-100 text-black! font-light rounded-lg w-fit transition duration-200"

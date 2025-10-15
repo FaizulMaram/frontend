@@ -43,12 +43,20 @@ const productdata = [
     id: 5,
     image:
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYqJJQ-NwePtKLZjkkOnMe3ZEgomof6Wrn0A&s",
+    title: "Cap",
+    description:
+      "The Powder Canister is a finely milled setting powder designed to set makeup and control shine. With a lightweight and translucent formula, it provides a smooth and matte finish.",
+    qty: 10,
     price: "$150",
   },
   {
     id: 6,
     image:
       "https://italiano.pk/cdn/shop/files/9_55b516d0-7a54-4145-8292-d2d9aaf13443.jpg?v=1729068346",
+    title: "Cap",
+    description:
+      "The Powder Canister is a finely milled setting powder designed to set makeup and control shine. With a lightweight and translucent formula, it provides a smooth and matte finish.",
+    qty: 5,
     price: "$150",
   },
   {
