@@ -16,7 +16,9 @@ const Login = () => {
             name="password"
             placeholder="Enter Password"
           />
-          <Button text="Login" className="bg-black" />
+          <Link to="/home">
+            <Button text="Login" className="bg-black" />
+          </Link>
         </form>
         <p className="text-center text-sm mt-4 text-gray-600">
           Don’t have an account?{" "}
