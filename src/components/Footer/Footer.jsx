@@ -18,7 +18,7 @@ const Footer = () => {
     { id: 12, name: "Management" },
   ];
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2  mt-30 bg-black text-white p-4 sm:p-3 md:p-4 lg:p-0">
+    <div className="grid grid-cols-1 sm:grid-cols-2  mt-30 bg-black text-white p-4 sm:p-3 md:p-4 lg:p-0 ">
       <div className="mt-10 lg:w-[50%] md:ml-6 space-y-5">
         <p className="font-bold tracking-wider text-2xl">SHOP.FU</p>
         <p className="font-light text-base/8">
@@ -27,7 +27,7 @@ const Footer = () => {
         </p>
       </div>
       {/* Links */}
-      <div className="grid grid-cols-4 gap-6 mt-10 md:text-[1rem]">
+      <div className="grid grid-cols-4 gap-6 mt-10 md:text-[1rem] mb-10">
         <div className="list-none space-y-5">
           <p className="font-medium tracking-wider text-lg">Home</p>
           {Homelinks.map((data, index) => (

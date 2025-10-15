@@ -1,5 +1,6 @@
 import { TbShoppingBagPlus } from "react-icons/tb";
 import { FaEye } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 import productdata from "../../DummyData/data";
 const Products = () => {
@@ -14,13 +15,16 @@ const Products = () => {
           >
             <img
               src={product.image}
-              alt={product.name}
               className="mx-auto my-4 w-48 h-48 object-cover"
             />
-            <p className="text-center">{product.name}</p>
-            <div className="flex gap-3">
-              <TbShoppingBagPlus className="hover:text-blue-500 cursor-pointer duration-200" />
-              <FaEye className="hover:text-red-500  cursor-pointer duration-200" />
+            <div className="flex justify-between">
+              <div className="flex gap-3">
+                <TbShoppingBagPlus className="hover:text-blue-500 cursor-pointer duration-200" />
+                <Link key={product.id} to={`/product/${product.id}`}>
+                  <FaEye className="hover:text-red-500 cursor-pointer duration-200" />
+                </Link>
+              </div>
+              <p className="text-sm text-gray-400">{product.price}</p>
             </div>
           </div>
         ))}
