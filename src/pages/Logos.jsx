@@ -14,13 +14,15 @@ const Logos = () => {
   ];
   return (
     <div className="bg-black sm:flex justify-center items-center p-6 gap-0 grid grid-cols-5 sm:gap-10 md:gap-15 lg:gap-30">
-      {logos.map((logo) => (
-        <a href={logo.url} target="_blank">
-          <img
-            src={logo.src}
-            className="hover:scale-105 cursor-pointer duration-200 w-10 sm:w-10 md:w-12 lg:w-20"
-          />
-        </a>
+      {logos.map((logo, index) => (
+        <div key={index}>
+          <a href={logo.url} target="_blank">
+            <img
+              src={logo.src}
+              className="hover:scale-105 cursor-pointer duration-200 w-10 sm:w-10 md:w-12 lg:w-20"
+            />
+          </a>
+        </div>
       ))}
     </div>
   );
