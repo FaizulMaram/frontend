@@ -6,24 +6,37 @@ const productdata = [
     title: "T-Shirt",
     description:
       "The Powder Canister is a finely milled setting powder designed to set makeup and control shine. With a lightweight and translucent formula, it provides a smooth and matte finish.",
+    qty: 50,
     price: "$150",
   },
   {
     id: 2,
     image:
       "https://focusclothing.pk/cdn/shop/files/IMG_8825copy.jpg?v=1752320362",
+    title: "T-Shirt",
+    description:
+      "The Powder Canister is a finely milled setting powder designed to set makeup and control shine. With a lightweight and translucent formula, it provides a smooth and matte finish.",
+    qty: 50,
     price: "$150",
   },
   {
     id: 3,
     image:
       "https://image.made-in-china.com/2f0j00AEekdHTqLmbz/Women-Girls-Cotton-Jersey-Round-Neck-Long-Sleeve-Tee-Shirts-with-Customized-Logo-Solid-Color-Printed-T-Shirt.webp",
+    title: "T-Shirt",
+    description:
+      "The Powder Canister is a finely milled setting powder designed to set makeup and control shine. With a lightweight and translucent formula, it provides a smooth and matte finish.",
+    qty: 50,
     price: "$150",
   },
   {
     id: 4,
     image:
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREnecluTbDq7Tg-Pedi3Ks2gcmwuqyAiHGfg&s",
+    title: "T-Shirt",
+    description:
+      "The Powder Canister is a finely milled setting powder designed to set makeup and control shine. With a lightweight and translucent formula, it provides a smooth and matte finish.",
+    qty: 50,
     price: "$150",
   },
   {

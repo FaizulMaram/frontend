@@ -1,4 +1,5 @@
 import Navbar from "../components/Navbar/Navbar";
+import BackPage from "../components/Shared/BackPage";
 import { Button } from "../components/Shared/Button";
 import productdata from "../DummyData/data";
 import { useParams, Link } from "react-router-dom";
@@ -13,19 +14,14 @@ const ProductDetail = () => {
 
       <div className="max-w-6xl mx-auto px-5 py-10">
         {/* Back button */}
-        <Link
-          to="/home"
-          className="text-red-400 hover:underline text-sm flex items-center gap-2 mb-5"
-        >
-          ← Back to Home
-        </Link>
+        <BackPage to="/home" text="Back to Home" />
 
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col md:flex-row">
+        <div className="bg-white rounded-2xl overflow-hidden flex flex-col md:flex-row">
           {/*  */}
           <div className="md:w-1/2 flex items-center justify-center p-6">
             <img
               src={product.image}
-              className="w-80 h-80 object-contain rounded-xl shadow-md"
+              className="w-80 h-80 object-contain rounded-xl "
             />
           </div>
 

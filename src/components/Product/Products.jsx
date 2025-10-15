@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import productdata from "../../DummyData/data";
 const Products = () => {
   return (
-    <div>
+    <>
       <h1 className="font-bold text-center text-3xl mt-10">PRODUCTS</h1>
       <div className="grid grid-cols-2 p-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
         {productdata.map((product, index) => (
@@ -29,7 +29,7 @@ const Products = () => {
           </div>
         ))}
       </div>
-    </div>
+    </>
   );
 };
 
