@@ -3,7 +3,7 @@ import { useState } from "react";
 import productdata from "../DummyData/data";
 import { CartList } from "../components/Cart/CartList";
 import { Button } from "../components/Shared/Button";
-
+import { Link } from "react-router-dom";
 const Cart = () => {
   const [cartItems, setCartItems] = useState([
     { ...productdata[0], qty: 1 },
@@ -54,7 +54,12 @@ const Cart = () => {
                     .toFixed(2)}
                 </strong>
               </span>
-              <Button text="Checkout" className="bg-black text-xs sm:text-sm" />
+              <Link to="/checkout">
+                <Button
+                  text="Checkout"
+                  className="bg-black text-xs sm:text-sm"
+                />
+              </Link>
             </div>
           </div>
         )}
