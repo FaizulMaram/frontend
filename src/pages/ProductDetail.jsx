@@ -1,6 +1,5 @@
 import Navbar from "../components/Navbar/Navbar";
 import BackPage from "../components/Shared/BackPage";
-import GoPage from "../components/Shared/GoPage";
 import { Button } from "../components/Shared/Button";
 import productdata from "../DummyData/data";
 import { useParams, Link } from "react-router-dom";
