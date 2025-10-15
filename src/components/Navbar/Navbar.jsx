@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Popup from "reactjs-popup";
 import { InputField } from "../Shared/InputField";
-import { SearchBar } from "../Shared/SearchBar";
 import { IoCartSharp } from "react-icons/io5";
 import { FaUserCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -44,7 +43,11 @@ const Navbar = () => {
       <h1 className="font-extrabold text-3xl">SHOP.FU</h1>
 
       <div className="text-xs sm:text-sm ml-2 sm:ml-0 mr-2 sm:mr-0">
-        <SearchBar onSearch={onSearch} />
+        <InputField
+          type="text"
+          placeholder="Search Here"
+          className="w-[100%]! border-0 sm:border truncate"
+        />
       </div>
 
       <div className="flex gap-4 items-center">
