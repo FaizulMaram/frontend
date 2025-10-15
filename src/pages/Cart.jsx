@@ -14,10 +14,6 @@ const Cart = () => {
     setCartItems(cartItems.filter((item) => item.id !== id));
   };
 
-  const totalBill = cartItems
-    .reduce((acc, item) => acc + item.price * item.qty, 0)
-    .toFixed(2);
-
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
@@ -46,8 +42,17 @@ const Cart = () => {
 
             {/* Total Bill */}
             <div className="mt-10 text-right">
-              <span className="text-xl font-semibold text-gray-800">
-                Total Bill: <span className="text-red-600">${totalBill}</span>
+              <span>
+                {" "}
+                <strong>
+                  Total Bill: $
+                  {cartItems
+                    .reduce(
+                      (account, item) => account + item.price * item.qty,
+                      0
+                    )
+                    .toFixed(2)}
+                </strong>
               </span>
               <Button text="Checkout" className="bg-black text-xs sm:text-sm" />
             </div>
