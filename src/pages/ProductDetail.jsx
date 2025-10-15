@@ -49,10 +49,12 @@ const ProductDetail = () => {
                 className="bg-black font-medium py-2 px-6 rounded-lg w-fit transition duration-200"
               />
 
-              <Button
-                text="View Cart"
-                className="bg-gray-100 text-black! font-light rounded-lg w-fit transition duration-200"
-              />
+              <Link to="/cart">
+                <Button
+                  text="View Cart"
+                  className="bg-gray-100 text-black! font-light rounded-lg w-fit transition duration-200"
+                />
+              </Link>
             </div>
           </div>
         </div>
