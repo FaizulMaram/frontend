@@ -2,6 +2,7 @@ import Navbar from "../components/Navbar/Navbar";
 import { useState } from "react";
 import productdata from "../DummyData/data";
 import { CartList } from "../components/Cart/CartList";
+import { Button } from "../components/Shared/Button";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([
@@ -48,6 +49,7 @@ const Cart = () => {
               <span className="text-xl font-semibold text-gray-800">
                 Total Bill: <span className="text-red-600">${totalBill}</span>
               </span>
+              <Button text="Checkout" className="bg-black text-xs sm:text-sm" />
             </div>
           </div>
         )}
