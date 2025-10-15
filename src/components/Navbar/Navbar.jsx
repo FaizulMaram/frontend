@@ -34,7 +34,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     setModalOpen(false);
-    navigate("/login");
+    navigate("/");
   };
 
   const searchedData = data.filter(
