@@ -19,7 +19,7 @@ const Navbar = () => {
   const UserLogoutModal = ({ open, onClose }) => {
     return (
       <Popup open={open} onClose={onClose}>
-        <div className="p-15 rounded-2xl text-center bg-white">
+        <div className="p-15 rounded-2xl shadow-2xl text-center bg-white">
           <h2 className="text-xl font-bold mb-5">Do you want to Log Out?</h2>
           <div className="flex justify-center gap-4">
             <Button

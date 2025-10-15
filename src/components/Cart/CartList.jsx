@@ -13,16 +13,16 @@ export const CartList = ({ item, removeFromCart }) => {
       <div className="cart-item-details flex-1 sm:ml-6 text-center sm:text-left">
         <p className="text-lg font-semibold text-gray-800">{item.title}</p>
         <p className="text-gray-500 text-sm mt-1">Quantity: {item.qty}</p>
-        <p className="text-gray-500 text-sm">Price: ${item.price}</p>
+        <p className="text-gray-500 text-sm">Price: {item.price}</p>
         <p className="text-gray-800 font-semibold mt-2">
           Total: ${(item.price * item.qty).toFixed(2)}
         </p>
       </div>
       {/* Quantity Controls */}
-      <div className="flex items-center justify-center gap-1 mt-3">
+      <div className="flex items-center justify-center gap-1 mr-2">
         <Button
           onClick={() => decreaseQty(item.id)}
-          className="bg-gray-200! hover:bg-gray-300! text-gray-700! px-3! py-1! text-sm font-semibold transition!"
+          className="bg-gray-200! rounded-full! hover:bg-gray-300! text-gray-700! px-3! py-1! text-sm font-semibold transition!"
           text="-"
         />
 
@@ -32,7 +32,7 @@ export const CartList = ({ item, removeFromCart }) => {
 
         <Button
           onClick={() => increaseQty(item.id)}
-          className="bg-gray-200! hover:bg-gray-300! text-gray-700! px-3! py-1! text-sm font-semibold transition!"
+          className="bg-gray-200! rounded-full!  hover:bg-gray-300! text-gray-700! px-3! py-1! text-sm font-semibold transition!"
           text="+"
         />
       </div>
