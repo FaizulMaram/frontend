@@ -4,13 +4,13 @@ import { Link } from "react-router-dom";
 const Footer = () => {
   const quickLinks = [
     { id: 1, name: "Home", link: "/home" },
-    { id: 2, name: "Shop", link: "/contact" },
+    { id: 2, name: "Shop", link: "/shop" },
     { id: 3, name: "Contact", link: "/contact" },
   ];
 
   const supportLinks = [
     { id: 4, name: "FAQ", link: "/faq" },
-    { id: 5, name: "Returns" },
+    { id: 5, name: "Returns", link: "/return" },
     { id: 6, name: "Shipping" },
   ];
 

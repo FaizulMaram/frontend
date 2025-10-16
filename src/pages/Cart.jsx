@@ -15,7 +15,10 @@ const Cart = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      <div className="p-5">
+        {" "}
+        <Navbar />
+      </div>
       <div className="max-w-5xl mx-auto px-5 py-10">
         <h1 className="text-3xl font-bold text-gray-800 mb-8">Your Cart</h1>
 

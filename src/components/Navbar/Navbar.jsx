@@ -30,14 +30,14 @@ const UserLogoutModal = ({ open, onClose, onConfirm }) => (
 
 const Navbar = () => {
   const [searchData, setSearchData] = useState("");
-  const [allProducts, setAllProducts] = useState([]); // ✅ will hold products from API
+  const [allProducts, setAllProducts] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const cartItems = useSelector((state) => state.cart.items);
   const cartCount = cartItems.reduce((total, item) => total + item.qty, 0);
 
-  // ✅ Fetch all products from API
+  // Fetch from API
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -51,7 +51,7 @@ const Navbar = () => {
     fetchProducts();
   }, []);
 
-  // ✅ Search filter logic
+  // Search
   const searchedData = allProducts.filter(
     (item) =>
       item.title &&
@@ -66,9 +66,11 @@ const Navbar = () => {
 
   return (
     <div className="flex justify-evenly items-center mt-5 relative">
-      <h1 className="font-extrabold text-3xl">SHOP.FU</h1>
+      <Link to="/home">
+        <h1 className="font-extrabold text-3xl">SHOP.FU</h1>
+      </Link>
 
-      {/* ✅ Search bar */}
+      {/* Search bar */}
       <div className="relative w-1/3">
         <InputField
           type="text"
@@ -99,7 +101,7 @@ const Navbar = () => {
         )}
       </div>
 
-      {/* ✅ Icons */}
+      {/* Icons */}
       <div className="flex gap-4 items-center">
         <Link to="/cart" className="relative">
           <IoCartSharp className="text-2xl text-gray-700 hover:text-black cursor-pointer" />
