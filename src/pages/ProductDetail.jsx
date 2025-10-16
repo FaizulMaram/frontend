@@ -9,7 +9,7 @@ const ProductDetail = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Fetch single product
+  // Fetch product
   useEffect(() => {
     const fetchProduct = async () => {
       try {
