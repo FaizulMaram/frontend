@@ -1,8 +1,33 @@
 import { InputField } from "../components/Shared/InputField";
 import { Button } from "../components/Shared/Button";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { useSignupUserMutation } from "../redux/apis/authApi";
 
 const Signup = () => {
+  const [registerUser, { isLoading }] = useSignupUserMutation();
+
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const { name, email, password } = form;
+      if (!name || !email || !password) {
+        return alert("please enter all required fields");
+      }
+      const res = await registerUser({ data: form }).unwrap();
+      if (res.success) {
+        alert("You Register successfully");
+      }
+    } catch (error) {
+      alert(error?.data?.message || "error while signing up");
+      console.log("error while signing up ", error);
+    }
+  };
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100">
       <div className="bg-white p-8 rounded-2xl shadow-md w-[90%] max-w-md text-center">
@@ -10,14 +35,32 @@ const Signup = () => {
           Create Account
         </h2>
         <form>
-          <InputField type="text" name="name" placeholder="Your Name" />
-          <InputField type="email" name="email" placeholder="Your Email" />
+          <InputField
+            type="text"
+            name="name"
+            placeholder="Your Name"
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+          />
+          <InputField
+            type="email"
+            name="email"
+            placeholder="Your Email"
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+          />
           <InputField
             type="password"
             name="password"
             placeholder="Your Password"
+            value={form.password}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
           />
-          <Button text="Sign Up" className="bg-black" />
+          <Button
+            onClick={handleFormSubmit}
+            text="Sign Up"
+            className="bg-black"
+          />
         </form>
         <p className="text-center text-sm mt-4 text-gray-600">
           Already have an account?{" "}
