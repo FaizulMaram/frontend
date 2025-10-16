@@ -1,59 +1,76 @@
+import { FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa";
+
 const Footer = () => {
-  const Homelinks = [
-    { id: 1, name: "About" },
-    { id: 2, name: "Features" },
-    { id: 3, name: "Career" },
-    { id: 4, name: "Works" },
+  const quickLinks = [
+    { id: 1, name: "Home" },
+    { id: 2, name: "Shop" },
+    { id: 3, name: "Contact" },
   ];
-  const Helplinks = [
-    { id: 5, name: "Customer Support" },
-    { id: 6, name: "Delivery Details" },
-    { id: 7, name: "Terms & Conditions" },
-    { id: 8, name: "Privacy Policy" },
+
+  const supportLinks = [
+    { id: 4, name: "FAQ" },
+    { id: 5, name: "Returns" },
+    { id: 6, name: "Shipping" },
   ];
-  const Faqlinks = [
-    { id: 9, name: "Account" },
-    { id: 10, name: "Payment" },
-    { id: 11, name: "Orders" },
-    { id: 12, name: "Management" },
-  ];
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2  mt-30 bg-black text-white p-4 sm:p-3 md:p-4 lg:p-0 ">
-      <div className="mt-10 lg:w-[50%] md:ml-6 space-y-5">
-        <p className="font-bold tracking-wider text-2xl">SHOP.FU</p>
-        <p className="font-light text-base/8">
-          We have clothes that suits your style and which you’re proud to wear.
-          From women to men.
-        </p>
+    <footer className="bg-black text-white mt-20 py-10 px-6 md:px-16">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+        {/* Brand Info */}
+        <div>
+          <h2 className="font-extrabold text-2xl mb-3">SHOP.FU</h2>
+          <p className="text-gray-400 text-sm">
+            Trendy, comfortable and stylish wear for everyone. Discover your
+            fashion today!
+          </p>
+        </div>
+
+        {/* Quick Links */}
+        <div>
+          <h3 className="font-semibold text-lg mb-3">Quick Links</h3>
+          <ul className="space-y-2 text-gray-300">
+            {quickLinks.map((link) => (
+              <li
+                key={link.id}
+                className="cursor-pointer hover:text-white transition"
+              >
+                {link.name}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Customer Support */}
+        <div>
+          <h3 className="font-semibold text-lg mb-3">Customer Support</h3>
+          <ul className="space-y-2 text-gray-300">
+            {supportLinks.map((link) => (
+              <li
+                key={link.id}
+                className="cursor-pointer hover:text-white transition"
+              >
+                {link.name}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Social Media */}
+        <div>
+          <h3 className="font-semibold text-lg mb-3">Follow Us</h3>
+          <div className="flex gap-4">
+            <FaFacebookF className="cursor-pointer hover:text-blue-400" />
+            <FaInstagram className="cursor-pointer hover:text-pink-500" />
+            <FaTwitter className="cursor-pointer hover:text-blue-300" />
+          </div>
+        </div>
       </div>
-      {/* Links */}
-      <div className="grid grid-cols-4 gap-6 mt-10 md:text-[1rem] mb-10">
-        <div className="list-none space-y-5">
-          <p className="font-medium tracking-wider text-lg">Home</p>
-          {Homelinks.map((data, index) => (
-            <div key={index}>
-              <li className="cursor-pointer">{data.name}</li>
-            </div>
-          ))}
-        </div>
-        <div className="list-none space-y-5">
-          <p className="font-medium tracking-wider text-lg">Help</p>
-          {Helplinks.map((data, index) => (
-            <div key={index}>
-              <li className="cursor-pointer">{data.name}</li>
-            </div>
-          ))}
-        </div>
-        <div className="list-none space-y-5">
-          <p className="font-medium tracking-wider text-lg">FAQ</p>
-          {Faqlinks.map((data, index) => (
-            <div key={index}>
-              <li className="cursor-pointer">{data.name}</li>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
+
+      <hr className="border-gray-700 my-6" />
+      <p className="text-center text-gray-500 text-sm">
+        © 2025 SHOP.FU — All Rights Reserved
+      </p>
+    </footer>
   );
 };
 

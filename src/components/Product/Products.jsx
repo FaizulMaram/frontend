@@ -1,35 +1,45 @@
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProducts } from "../../redux/productsSlice";
+import { addToCart } from "../../redux/cartSlice";
 import { TbShoppingBagPlus } from "react-icons/tb";
 import { FaEye } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
-import productdata from "../../DummyData/data";
 const Products = () => {
+  const dispatch = useDispatch();
+  const { items, loading } = useSelector((state) => state.products);
+
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
+
+  if (loading) return <p className="text-center mt-10">Loading...</p>;
+
   return (
-    <>
-      <h1 className="font-bold text-center text-3xl mt-10">PRODUCTS</h1>
-      <div className="grid grid-cols-2 p-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-        {productdata.map((product, index) => (
-          <div
-            key={index}
-            className="items-center bg-white shadow-lg rounded-2xl p-4 hover:scale-105 transition-transform duration-300"
-          >
-            <img
-              src={product.image}
-              className="mx-auto my-4 w-48 h-48 object-cover"
-            />
-            <div className="flex justify-between">
-              <div className="flex gap-3">
-                <TbShoppingBagPlus className="hover:text-blue-500 cursor-pointer duration-200" />
-                <Link key={product.id} to={`/product/${product.id}`}>
-                  <FaEye className="hover:text-red-500 cursor-pointer duration-200" />
-                </Link>
-              </div>
-              <p className="text-sm text-gray-400">{product.price}</p>
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 p-4">
+      {items.map((product) => (
+        <div key={product.id} className="bg-white p-4 shadow rounded-lg">
+          <img
+            src={product.image}
+            alt={product.title}
+            className="w-full h-40 object-contain mb-2"
+          />
+          <div className="flex justify-between items-center">
+            <div className="flex gap-2">
+              <TbShoppingBagPlus
+                onClick={() => dispatch(addToCart(product))}
+                className="cursor-pointer hover:text-blue-500"
+              />
+              <Link to={`/product/${product.id}`}>
+                <FaEye className="hover:text-red-500 cursor-pointer" />
+              </Link>
             </div>
+            <p className="text-sm font-semibold">${product.price}</p>
           </div>
-        ))}
-      </div>
-    </>
+        </div>
+      ))}
+    </div>
   );
 };
 
