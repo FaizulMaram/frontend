@@ -1,16 +1,35 @@
 import { FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   const quickLinks = [
-    { id: 1, name: "Home" },
-    { id: 2, name: "Shop" },
-    { id: 3, name: "Contact" },
+    { id: 1, name: "Home", link: "/home" },
+    { id: 2, name: "Shop", link: "/contact" },
+    { id: 3, name: "Contact", link: "/contact" },
   ];
 
   const supportLinks = [
-    { id: 4, name: "FAQ" },
+    { id: 4, name: "FAQ", link: "/faq" },
     { id: 5, name: "Returns" },
     { id: 6, name: "Shipping" },
+  ];
+
+  const socialLinks = [
+    {
+      icon: <FaFacebookF />,
+      url: "https://www.facebook.com",
+      className: "cursor-pointer hover:text-blue-400",
+    },
+    {
+      icon: <FaInstagram />,
+      url: "https://www.instagram.com",
+      className: "cursor-pointer hover:text-pink-500",
+    },
+    {
+      icon: <FaTwitter />,
+      url: "https://www.x.com",
+      className: "cursor-pointer hover:text-blue-300",
+    },
   ];
 
   return (
@@ -30,12 +49,14 @@ const Footer = () => {
           <h3 className="font-semibold text-lg mb-3">Quick Links</h3>
           <ul className="space-y-2 text-gray-300">
             {quickLinks.map((link) => (
-              <li
-                key={link.id}
-                className="cursor-pointer hover:text-white transition"
-              >
-                {link.name}
-              </li>
+              <Link to={link.link}>
+                <li
+                  key={link.id}
+                  className="cursor-pointer hover:text-white transition"
+                >
+                  {link.name}
+                </li>
+              </Link>
             ))}
           </ul>
         </div>
@@ -45,12 +66,14 @@ const Footer = () => {
           <h3 className="font-semibold text-lg mb-3">Customer Support</h3>
           <ul className="space-y-2 text-gray-300">
             {supportLinks.map((link) => (
-              <li
-                key={link.id}
-                className="cursor-pointer hover:text-white transition"
-              >
-                {link.name}
-              </li>
+              <Link to={link.link}>
+                <li
+                  key={link.id}
+                  className="cursor-pointer hover:text-white transition"
+                >
+                  {link.name}
+                </li>
+              </Link>
             ))}
           </ul>
         </div>
@@ -59,9 +82,11 @@ const Footer = () => {
         <div>
           <h3 className="font-semibold text-lg mb-3">Follow Us</h3>
           <div className="flex gap-4">
-            <FaFacebookF className="cursor-pointer hover:text-blue-400" />
-            <FaInstagram className="cursor-pointer hover:text-pink-500" />
-            <FaTwitter className="cursor-pointer hover:text-blue-300" />
+            {socialLinks.map((link) => (
+              <a href={link.url} target="_blank" className={link.className}>
+                {link.icon}
+              </a>
+            ))}
           </div>
         </div>
       </div>
