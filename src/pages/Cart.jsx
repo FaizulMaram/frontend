@@ -2,6 +2,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { removeFromCart, clearCart } from "../redux/cartSlice";
 import Navbar from "../components/Navbar/Navbar";
 import { Button } from "../components/Shared/Button";
+import { MdDelete } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 const Cart = () => {
   const { items } = useSelector((state) => state.cart);
@@ -24,24 +26,18 @@ const Cart = () => {
             {items.map((item) => (
               <div key={item.id} className="flex justify-between mb-4">
                 <div className="flex gap-4 items-center">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="w-20 h-20 object-contain"
-                  />
-                  <div>
+                  <img src={item.image} className="w-20 h-20 object-contain" />
+                  <div className="overflow-hidden">
                     <p>{item.title}</p>
                     <p>Qty: {item.qty}</p>
                   </div>
                 </div>
-                <div>
+                <div className="flex justify-center gap-3 items-center text-center">
                   <p>${(item.price * item.qty).toFixed(2)}</p>
-                  <button
+                  <MdDelete
                     onClick={() => dispatch(removeFromCart(item.id))}
-                    className="text-red-500 text-sm"
-                  >
-                    Remove
-                  </button>
+                    className="text-red-500 text-2xl cursor-pointer"
+                  />
                 </div>
               </div>
             ))}
@@ -50,10 +46,12 @@ const Cart = () => {
               Total: ${totalBill}
             </p>
             <div className="flex justify-end gap-3 mt-4">
-              <Button
-                text="Checkout"
-                className="bg-black text-white px-5 py-2 rounded-md"
-              />
+              <Link to="/checkout">
+                <Button
+                  text="Checkout"
+                  className="bg-black text-white px-5 py-2 rounded-md"
+                />
+              </Link>
               <Button
                 text="Clear Cart"
                 onClick={() => dispatch(clearCart())}
