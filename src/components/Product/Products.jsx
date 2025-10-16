@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProducts } from "../../redux/productsSlice";
-import { addToCart } from "../../redux/cartSlice";
+import { fetchProducts } from "../../redux/slices/productsSlice";
+import { addToCart } from "../../redux/slices/cartSlice";
 import { TbShoppingBagPlus } from "react-icons/tb";
 import { FaEye } from "react-icons/fa";
 import { Link } from "react-router-dom";

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Navbar from "../components/Navbar/Navbar";
 import { InputField } from "../components/Shared/InputField";
 import { Button } from "../components/Shared/Button";
 import BackPage from "../components/Shared/BackPage";
