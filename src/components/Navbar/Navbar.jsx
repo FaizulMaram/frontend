@@ -167,17 +167,17 @@ const Navbar = () => {
             />
           </>
         ) : (
-          <div className="flex flex-col items-center gap-2">
+          <div className="flex items-center ml-1 sm:ml-0 gap-1">
             <Link to="/login">
               <Button
                 text="Login"
-                className="bg-black text-white px-4 py-2 rounded-lg text-sm"
+                className="bg-black text-xs text-white px-4 py-2 rounded-lg"
               />
             </Link>
             <Link to="/signup">
               <Button
                 text="Sign Up"
-                className="bg-gray-200 text-black px-4 py-2 rounded-lg text-sm truncate"
+                className="bg-gray-200 text-black! px-2 py-2 rounded-lg text-xs truncate"
               />
             </Link>
           </div>
