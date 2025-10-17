@@ -1,17 +1,98 @@
 import { useSelector, useDispatch } from "react-redux";
 import { removeFromCart, clearCart } from "../redux/slices/cartSlice";
+import { useViewCartQuery, useRemoveFromCartMutation, useDeleteCartMutation } from "../redux/apis/cartApi";
 import Navbar from "../components/Navbar/Navbar";
 import { Button } from "../components/Shared/Button";
 import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
+import { useEffect } from "react";
 
 const Cart = () => {
-  const { items } = useSelector((state) => state.cart);
+  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { items: localItems } = useSelector((state) => state.cart);
+  const { data: apiCart, isLoading, error } = useViewCartQuery(undefined, {
+    skip: !isAuthenticated,
+  });
+  const [removeFromCartAPI] = useRemoveFromCartMutation();
+  const [deleteCartAPI] = useDeleteCartMutation();
   const dispatch = useDispatch();
 
+  // Handle API errors
+  useEffect(() => {
+    if (error) {
+      toast.error(error?.data?.message || "Failed to load cart");
+    }
+  }, [error]);
+
+  // Use API cart if authenticated, otherwise use local cart
+  const items = isAuthenticated ? apiCart?.cart?.products || [] : localItems;
+  
   const totalBill = items
-    .reduce((acc, item) => acc + item.price * item.qty, 0)
+    .reduce((acc, item) => {
+      const price = item.product?.price || item.productId?.price || item.price;
+      const quantity = item.quantity || item.qty;
+      return acc + (price * quantity);
+    }, 0)
     .toFixed(2);
+
+  const handleRemoveItem = async (item) => {
+    if (isAuthenticated) {
+      try {
+        // For API cart, send the product ID to remove the item
+        await removeFromCartAPI({ 
+          productId: item.product._id 
+        }).unwrap();
+        toast.success("Item removed from cart");
+      } catch (error) {
+        console.error("Failed to remove item:", error);
+        toast.error("Failed to remove item");
+      }
+    } else {
+      dispatch(removeFromCart(item.id));
+      toast.success("Item removed from cart");
+    }
+  };
+
+  const handleClearCart = async () => {
+    if (isAuthenticated) {
+      try {
+        if (apiCart?._id) {
+          await deleteCartAPI(apiCart._id).unwrap();
+          toast.success("Cart cleared successfully");
+        }
+      } catch (error) {
+        console.error("Failed to clear cart:", error);
+        toast.error("Failed to clear cart");
+      }
+    } else {
+      dispatch(clearCart());
+      toast.success("Cart cleared successfully");
+    }
+  };
+
+  if (isAuthenticated && isLoading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  if (isAuthenticated && error) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="p-5">
+          <Navbar />
+        </div>
+        <div className="max-w-5xl mx-auto px-5 py-10">
+          <div className="text-center text-red-500">
+            Error loading cart. Please try again.
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -26,24 +107,36 @@ const Cart = () => {
           <p className="text-center text-gray-600">Your cart is empty.</p>
         ) : (
           <div>
-            {items.map((item) => (
-              <div key={item.id} className="flex justify-between mb-4">
-                <div className="flex gap-4 items-center">
-                  <img src={item.image} className="w-20 h-20 object-contain" />
-                  <div className="overflow-hidden">
-                    <p>{item.title}</p>
-                    <p>Qty: {item.qty}</p>
+            {items.map((item, index) => {
+              // For API cart items, product data is in item.product
+              // For local cart items, product data is directly in item
+              const product = isAuthenticated ? item.product : item;
+              const itemId = item._id || item.id;
+              const itemKey = itemId || index;
+              
+              return (
+                <div key={itemKey} className="flex justify-between mb-4">
+                  <div className="flex gap-4 items-center">
+                    <img 
+                      src={product.image?.secureUrl || product.photo || product.image || item.image} 
+                      className="w-20 h-20 object-contain" 
+                      alt={product.name || product.title || item.title}
+                    />
+                    <div className="overflow-hidden">
+                      <p>{product.name || product.title || item.title}</p>
+                      <p>Qty: {item.quantity || item.qty}</p>
+                    </div>
+                  </div>
+                  <div className="flex justify-center gap-3 items-center text-center">
+                    <p>${((product.price || item.price) * (item.quantity || item.qty)).toFixed(2)}</p>
+                    <MdDelete
+                      onClick={() => handleRemoveItem(item)}
+                      className="text-red-500 text-2xl cursor-pointer"
+                    />
                   </div>
                 </div>
-                <div className="flex justify-center gap-3 items-center text-center">
-                  <p>${(item.price * item.qty).toFixed(2)}</p>
-                  <MdDelete
-                    onClick={() => dispatch(removeFromCart(item.id))}
-                    className="text-red-500 text-2xl cursor-pointer"
-                  />
-                </div>
-              </div>
-            ))}
+              );
+            })}
             <hr className="my-4" />
             <p className="text-xl font-semibold text-right">
               Total: ${totalBill}
@@ -57,7 +150,7 @@ const Cart = () => {
               </Link>
               <Button
                 text="Clear Cart"
-                onClick={() => dispatch(clearCart())}
+                onClick={handleClearCart}
                 className="bg-gray-200 text-black px-5 py-2 rounded-md"
               />
             </div>

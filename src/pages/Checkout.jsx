@@ -1,24 +1,84 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { InputField } from "../components/Shared/InputField";
 import { Button } from "../components/Shared/Button";
 import BackPage from "../components/Shared/BackPage";
+import { usePlaceOrderMutation } from "../redux/apis/orderApi";
+import { useViewCartQuery } from "../redux/apis/cartApi";
+import { toast } from "sonner";
+import { useEffect } from "react";
 
 const Checkout = () => {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { items: localItems } = useSelector((state) => state.cart);
+  const { data: apiCart, error } = useViewCartQuery(undefined, {
+    skip: !isAuthenticated,
+  });
+  const [placeOrder, { isLoading }] = usePlaceOrderMutation();
+
+  // Handle API errors
+  useEffect(() => {
+    if (error) {
+      toast.error(error?.data?.message || "Failed to load cart for checkout");
+    }
+  }, [error]);
+  
   const [formData, setFormData] = useState({
     email: "",
     address: "",
     apt: "",
     city: "",
     zip: "",
+    phone: "",
   });
 
+  // Use API cart if authenticated, otherwise use local cart
+  const items = isAuthenticated ? apiCart?.cart?.products || [] : localItems;
+  
+  const totalAmount = items
+    .reduce((acc, item) => {
+      const price = item.product?.price || item.productId?.price || item.price;
+      const quantity = item.quantity || item.qty;
+      return acc + (price * quantity);
+    }, 0)
+    .toFixed(2);
+
   const handleChange = (e) => {
-    setFormData(e.target.value);
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
-  const handleCheckout = (e) => {
+  const handleCheckout = async (e) => {
     e.preventDefault();
-    alert("Order placed successfully!");
+    
+    if (items.length === 0) {
+      toast.error("Your cart is empty!");
+      return;
+    }
+
+    if (!formData.address || !formData.city || !formData.phone) {
+      toast.error("Please fill in all required fields!");
+      return;
+    }
+
+    try {
+      const orderData = {
+        address: formData.address,
+        city: formData.city,
+        phoneNumber: formData.phone,
+      };
+
+      await placeOrder(orderData).unwrap();
+      toast.success("Order placed successfully!");
+      navigate("/orders");
+    } catch (error) {
+      console.error("Failed to place order:", error);
+      toast.error("Failed to place order. Please try again.");
+    }
   };
 
   return (
@@ -78,11 +138,40 @@ const Checkout = () => {
             onChange={handleChange}
           />
 
+          <InputField
+            type="tel"
+            name="phone"
+            label="Phone Number"
+            placeholder="Enter Phone Number"
+            value={formData.phone}
+            onChange={handleChange}
+          />
+
+          <div className="bg-gray-50 p-4 rounded-lg mb-4">
+            <h3 className="font-semibold mb-2">Order Summary</h3>
+            <div className="space-y-1">
+              {items.map((item, index) => {
+                const product = isAuthenticated ? item.product : item;
+                return (
+                  <div key={index} className="flex justify-between text-sm">
+                    <span>{product.name || product.title} x {item.quantity || item.qty}</span>
+                    <span>${((product.price || item.price) * (item.quantity || item.qty)).toFixed(2)}</span>
+                  </div>
+                );
+              })}
+              <hr className="my-2" />
+              <div className="flex justify-between font-semibold">
+                <span>Total: ${totalAmount}</span>
+              </div>
+            </div>
+          </div>
+
           <div className="pt-4 text-center">
             <Button
               type="submit"
-              text="Place Order"
+              text={isLoading ? "Placing Order..." : "Place Order"}
               className="bg-black text-white px-8 py-3 rounded-lg hover:bg-gray-800 transition duration-200"
+              disabled={isLoading}
             />
           </div>
         </form>

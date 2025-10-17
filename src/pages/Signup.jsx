@@ -1,11 +1,13 @@
 import { InputField } from "../components/Shared/InputField";
 import { Button } from "../components/Shared/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useSignupUserMutation } from "../redux/apis/authApi";
+import { toast } from "sonner";
 
 const Signup = () => {
   const [registerUser, { isLoading }] = useSignupUserMutation();
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     name: "",
@@ -17,14 +19,16 @@ const Signup = () => {
     try {
       const { name, email, password } = form;
       if (!name || !email || !password) {
-        return alert("please enter all required fields");
+        toast.error("Please enter all required fields");
+        return;
       }
-      const res = await registerUser({ data: form }).unwrap();
+      const res = await registerUser(form).unwrap();
       if (res.success) {
-        alert("You Register successfully");
+        toast.success(res.message || "You registered successfully");
+        navigate("/login");
       }
     } catch (error) {
-      alert(error?.data?.message || "error while signing up");
+      toast.error(error?.data?.message || "Error while signing up");
       console.log("error while signing up ", error);
     }
   };
@@ -34,7 +38,7 @@ const Signup = () => {
         <h2 className="text-2xl font-bold mb-6 text-gray-800">
           Create Account
         </h2>
-        <form>
+        <form onSubmit={handleFormSubmit}>
           <InputField
             type="text"
             name="name"
@@ -57,9 +61,10 @@ const Signup = () => {
             onChange={(e) => setForm({ ...form, password: e.target.value })}
           />
           <Button
-            onClick={handleFormSubmit}
-            text="Sign Up"
+            type="submit"
+            text={isLoading ? "Signing up..." : "Sign Up"}
             className="bg-black"
+            disabled={isLoading}
           />
         </form>
         <p className="text-center text-sm mt-4 text-gray-600">

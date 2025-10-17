@@ -1,6 +1,7 @@
 export const InputField = ({
   label,
   type,
+  name,
   value,
   onChange,
   placeholder,
@@ -11,6 +12,7 @@ export const InputField = ({
       <label className="block text-gray-700 text-sm mb-2">{label}</label>
       <input
         type={type}
+        name={name}
         value={value}
         onChange={onChange}
         placeholder={placeholder}

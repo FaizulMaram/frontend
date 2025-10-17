@@ -1,28 +1,53 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { API_BASE_URL } from "../../config/api";
 
 export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: `${import.meta.env.VITE_SERVER_URL}/auth`,
+    baseUrl: `${API_BASE_URL}/auth`,
     credentials: "include",
   }),
+  tagTypes: ["User"],
   endpoints: (builder) => ({
-    // login
+    // Login user
     loginUser: builder.mutation({
-      query: ({ data }) => ({
+      query: (data) => ({
         url: "/login",
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["User"],
     }),
-    // signup
+
+    // Signup user
     signupUser: builder.mutation({
-      query: ({ data }) => ({
+      query: (data) => ({
         url: "/signup",
         method: "POST",
         body: data,
       }),
     }),
+
+    // Get user profile
+    getMyProfile: builder.query({
+      query: () => "/myProfile",
+      providesTags: ["User"],
+    }),
+
+    // Logout user
+    logoutUser: builder.mutation({
+      query: () => ({
+        url: "/logout",
+        method: "GET",
+      }),
+      invalidatesTags: ["User"],
+    }),
   }),
 });
-export const { useLoginUserMutation, useSignupUserMutation } = authApi;
+
+export const {
+  useLoginUserMutation,
+  useSignupUserMutation,
+  useGetMyProfileQuery,
+  useLogoutUserMutation,
+} = authApi;

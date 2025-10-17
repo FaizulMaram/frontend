@@ -5,36 +5,18 @@ export const CartList = ({ item, removeFromCart }) => {
     <li className="cart-item-container bg-white rounded-2xl shadow-md p-5 flex flex-col sm:flex-row justify-between items-center mb-4">
       {/* Product Image */}
       <img
-        src={item.image}
+        src={item.image?.secureUrl || item.photo || item.image}
         className="w-24 h-24 object-contain rounded-lg bg-gray-100 mb-4 sm:mb-0"
       />
 
       {/* Product Details */}
       <div className="cart-item-details flex-1 sm:ml-6 text-center sm:text-left">
-        <p className="text-lg font-semibold text-gray-800">{item.title}</p>
-        <p className="text-gray-500 text-sm mt-1">Quantity: {item.qty}</p>
-        <p className="text-gray-500 text-sm">Price: {item.price}</p>
+        <p className="text-lg font-semibold text-gray-800">{item.title || item.productId?.name}</p>
+        <p className="text-gray-500 text-sm mt-1">Quantity: {item.qty || item.quantity}</p>
+        <p className="text-gray-500 text-sm">Price: ${item.price || item.productId?.price}</p>
         <p className="text-gray-800 font-semibold mt-2">
-          Total: ${(item.price * item.qty).toFixed(2)}
+          Total: ${((item.price || item.productId?.price) * (item.qty || item.quantity)).toFixed(2)}
         </p>
-      </div>
-      {/* Quantity Controls */}
-      <div className="flex items-center justify-center gap-1 mr-2">
-        <Button
-          onClick={() => decreaseQty(item.id)}
-          className="bg-gray-200! rounded-full! hover:bg-gray-300! text-gray-700! px-3! py-1! text-sm font-semibold transition!"
-          text="-"
-        />
-
-        <span className="text-gray-800 font-semibold w-8 text-center">
-          {item.qty}
-        </span>
-
-        <Button
-          onClick={() => increaseQty(item.id)}
-          className="bg-gray-200! rounded-full!  hover:bg-gray-300! text-gray-700! px-3! py-1! text-sm font-semibold transition!"
-          text="+"
-        />
       </div>
       {/* Remove Button */}
       <Button

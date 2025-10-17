@@ -1,11 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Popup from "reactjs-popup";
 import { IoCartSharp } from "react-icons/io5";
 import { FaUserCircle } from "react-icons/fa";
 import { InputField } from "../Shared/InputField";
 import { Button } from "../Shared/Button";
+import { RiGiftFill } from "react-icons/ri";
 import { useSelector } from "react-redux";
+import { useLogoutUserMutation } from "../../redux/apis/authApi";
+import { useGetAllProductsQuery } from "../../redux/apis/productApi";
+import { useViewCartQuery } from "../../redux/apis/cartApi";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 // Logout modal
 const UserLogoutModal = ({ open, onClose, onConfirm }) => (
@@ -30,48 +36,76 @@ const UserLogoutModal = ({ open, onClose, onConfirm }) => (
 
 const Navbar = () => {
   const [searchData, setSearchData] = useState("");
-  const [allProducts, setAllProducts] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  const cartItems = useSelector((state) => state.cart.items);
-  const cartCount = cartItems.reduce((total, item) => total + item.qty, 0);
+  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { items: localCartItems } = useSelector((state) => state.cart);
 
-  // Fetch from API
+  // API queries
+  const { data: allProducts = {}, error: productsError } =
+    useGetAllProductsQuery();
+  const { data: apiCart, error: cartError } = useViewCartQuery(undefined, {
+    skip: !isAuthenticated,
+  });
+  const [logoutUser] = useLogoutUserMutation();
+
+  // Handle API errors
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await fetch("https://fakestoreapi.com/products");
-        const data = await res.json();
-        setAllProducts(data);
-      } catch (err) {
-        console.error("Error fetching products:", err);
-      }
-    };
-    fetchProducts();
-  }, []);
+    if (productsError) {
+      toast.error(
+        productsError?.data?.message || "Failed to load products for search"
+      );
+    }
+  }, [productsError]);
+
+  useEffect(() => {
+    if (cartError) {
+      toast.error(cartError?.data?.message || "Failed to load cart count");
+    }
+  }, [cartError]);
+
+  // Calculate cart count
+  const cartItems = isAuthenticated
+    ? apiCart?.cart?.products || []
+    : localCartItems;
+  const cartCount = cartItems.reduce((total, item) => {
+    const quantity = item.quantity || item.qty || 0;
+    return total + quantity;
+  }, 0);
+
+  // Get products array from API response
+  const productsArray = allProducts?.products || [];
 
   // Search
-  const searchedData = allProducts.filter(
+  const searchedData = productsArray.filter(
     (item) =>
-      item.title &&
+      (item.title || item.name) &&
       searchData &&
-      item.title.toLowerCase().includes(searchData.toLowerCase())
+      (item.title || item.name).toLowerCase().includes(searchData.toLowerCase())
   );
 
-  const handleLogout = () => {
-    setModalOpen(false);
-    navigate("/");
+  const handleLogout = async () => {
+    try {
+      await logoutUser().unwrap();
+      setModalOpen(false);
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+      // Force logout anyway
+      setModalOpen(false);
+      navigate("/login");
+    }
   };
 
   return (
     <div className="flex justify-evenly items-center mt-5 relative">
       <Link to="/home">
-        <h1 className="font-extrabold text-3xl">SHOP.FU</h1>
+        <h1 className="font-extrabold text-3xl hidden sm:flex">SHOP.FU</h1>
       </Link>
 
       {/* Search bar */}
-      <div className="relative w-1/3">
+      <div className="relative sm:w-1/3">
         <InputField
           type="text"
           placeholder="Search Here"
@@ -83,15 +117,19 @@ const Navbar = () => {
             {searchedData.length > 0 ? (
               searchedData.map((item) => (
                 <div
-                  key={item.id}
+                  key={item._id || item.id}
                   className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex justify-between"
                   onClick={() => {
-                    navigate(`/product/${item.id}`);
+                    navigate(`/product/${item._id || item.id}`);
                     setSearchData("");
                   }}
                 >
-                  <span>{item.title}</span>
-                  <img src={item.image} className="h-10 w-8 object-contain" />
+                  <span>{item.title || item.name}</span>
+                  <img
+                    src={item.image?.secureUrl || item.photo || item.image}
+                    className="h-10 w-8 object-contain"
+                    alt={item.title || item.name}
+                  />
                 </div>
               ))
             ) : (
@@ -102,26 +140,48 @@ const Navbar = () => {
       </div>
 
       {/* Icons */}
-      <div className="flex gap-4 items-center">
-        <Link to="/cart" className="relative">
-          <IoCartSharp className="text-2xl text-gray-700 hover:text-black cursor-pointer" />
-          {cartCount > 0 && (
-            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-semibold rounded-full w-5 h-5 flex items-center justify-center">
-              {cartCount}
-            </span>
-          )}
-        </Link>
+      <div className="flex gap-1 items-center">
+        {isAuthenticated ? (
+          <>
+            <Link to="/orders" className="text-2xl hover:underline">
+              <RiGiftFill />
+            </Link>
+            <Link to="/cart" className="relative">
+              <IoCartSharp className="text-2xl text-gray-700 hover:text-black cursor-pointer" />
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-semibold rounded-full w-5 h-5 flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
 
-        <FaUserCircle
-          onClick={() => setModalOpen(true)}
-          className="text-3xl text-gray-700 hover:text-black cursor-pointer"
-        />
+            <FaUserCircle
+              onClick={() => setModalOpen(true)}
+              className="text-2xl text-gray-700 hover:text-black cursor-pointer"
+            />
 
-        <UserLogoutModal
-          open={modalOpen}
-          onClose={() => setModalOpen(false)}
-          onConfirm={handleLogout}
-        />
+            <UserLogoutModal
+              open={modalOpen}
+              onClose={() => setModalOpen(false)}
+              onConfirm={handleLogout}
+            />
+          </>
+        ) : (
+          <div className="flex flex-col items-center gap-2">
+            <Link to="/login">
+              <Button
+                text="Login"
+                className="bg-black text-white px-4 py-2 rounded-lg text-sm"
+              />
+            </Link>
+            <Link to="/signup">
+              <Button
+                text="Sign Up"
+                className="bg-gray-200 text-black px-4 py-2 rounded-lg text-sm truncate"
+              />
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );
