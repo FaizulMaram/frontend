@@ -27,9 +27,9 @@ const Products = () => {
   const handleAddToCart = async (product) => {
     if (isAuthenticated) {
       try {
-        await addToCartAPI({ 
-          productId: product._id, 
-          quantity: 1 
+        await addToCartAPI({
+          productId: product._id,
+          quantity: 1,
         }).unwrap();
         toast.success("Product added to cart!");
       } catch (error) {
@@ -53,7 +53,10 @@ const Products = () => {
       </p>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 p-4">
         {products?.map((product) => (
-          <div key={product._id} className="bg-white p-4 shadow rounded-lg">
+          <div
+            key={product._id}
+            className="bg-white p-4 hover:scale-105 duration-300 shadow rounded-lg"
+          >
             <img
               src={product.image?.secureUrl || product.photo || product.image}
               alt={product.title || product.name}
@@ -69,10 +72,12 @@ const Products = () => {
                   className="cursor-pointer hover:text-blue-500"
                 />
                 <Link to={`/product/${product._id}`}>
-                  <FaEye className="hover:text-red-500 cursor-pointer" />
+                  <FaEye className="hover:text-red-500 text-lg cursor-pointer" />
                 </Link>
               </div>
-              <p className="text-sm font-semibold">${product.price}</p>
+              <p className="text-sm text-indigo-600 font-semibold">
+                ${product.price}
+              </p>
             </div>
           </div>
         ))}

@@ -140,7 +140,7 @@ const Navbar = () => {
       </div>
 
       {/* Icons */}
-      <div className="flex gap-1 items-center">
+      <div className="flex gap-2 items-center">
         {isAuthenticated ? (
           <>
             <Link to="/orders" className="text-2xl hover:underline">

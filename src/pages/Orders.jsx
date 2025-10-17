@@ -1,5 +1,6 @@
 import { useGetMyOrdersQuery } from "../redux/apis/orderApi";
 import { useCancelOrderMutation } from "../redux/apis/orderApi";
+import BackPage from "../components/Shared/BackPage";
 import { toast } from "sonner";
 import { useEffect } from "react";
 
@@ -41,6 +42,7 @@ const Orders = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
+      <BackPage text="Back" to="/home" />
       <h1 className="text-3xl md:text-4xl font-bold mb-8 text-center md:text-left">
         My Orders
       </h1>
