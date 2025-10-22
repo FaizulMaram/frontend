@@ -11,7 +11,9 @@ import { useEffect } from "react";
 
 const Checkout = () => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  console.log("Auth state:", isAuthenticated, user);
+
   const { items: localItems } = useSelector((state) => state.cart);
   const { data: apiCart, error } = useViewCartQuery(undefined, {
     skip: !isAuthenticated,
@@ -24,7 +26,17 @@ const Checkout = () => {
       toast.error(error?.data?.message || "Failed to load cart for checkout");
     }
   }, [error]);
-  
+
+  // Email saved
+  useEffect(() => {
+    if (isAuthenticated && user?.data?.email) {
+      setFormData((prev) => ({
+        ...prev,
+        email: user.data.email,
+      }));
+    }
+  }, [isAuthenticated, user]);
+
   const [formData, setFormData] = useState({
     email: "",
     address: "",
@@ -36,12 +48,12 @@ const Checkout = () => {
 
   // Use API cart if authenticated, otherwise use local cart
   const items = isAuthenticated ? apiCart?.cart?.products || [] : localItems;
-  
+
   const totalAmount = items
     .reduce((acc, item) => {
       const price = item.product?.price || item.productId?.price || item.price;
       const quantity = item.quantity || item.qty;
-      return acc + (price * quantity);
+      return acc + price * quantity;
     }, 0)
     .toFixed(2);
 
@@ -54,7 +66,7 @@ const Checkout = () => {
 
   const handleCheckout = async (e) => {
     e.preventDefault();
-    
+
     if (items.length === 0) {
       toast.error("Your cart is empty!");
       return;
@@ -154,8 +166,17 @@ const Checkout = () => {
                 const product = isAuthenticated ? item.product : item;
                 return (
                   <div key={index} className="flex justify-between text-sm">
-                    <span>{product.name || product.title} x {item.quantity || item.qty}</span>
-                    <span>${((product.price || item.price) * (item.quantity || item.qty)).toFixed(2)}</span>
+                    <span>
+                      {product.name || product.title} x{" "}
+                      {item.quantity || item.qty}
+                    </span>
+                    <span>
+                      $
+                      {(
+                        (product.price || item.price) *
+                        (item.quantity || item.qty)
+                      ).toFixed(2)}
+                    </span>
                   </div>
                 );
               })}

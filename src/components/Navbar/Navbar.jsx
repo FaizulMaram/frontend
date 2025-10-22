@@ -10,8 +10,8 @@ import { useSelector } from "react-redux";
 import { useLogoutUserMutation } from "../../redux/apis/authApi";
 import { useGetAllProductsQuery } from "../../redux/apis/productApi";
 import { useViewCartQuery } from "../../redux/apis/cartApi";
-import { useEffect } from "react";
-import { toast } from "sonner";
+import { useDispatch } from "react-redux";
+import { clearUser } from "../../redux/slices/authSlice";
 
 // Logout modal
 const UserLogoutModal = ({ open, onClose, onConfirm }) => (
@@ -35,6 +35,7 @@ const UserLogoutModal = ({ open, onClose, onConfirm }) => (
 );
 
 const Navbar = () => {
+  const dispatch = useDispatch();
   const [searchData, setSearchData] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const navigate = useNavigate();
@@ -43,27 +44,15 @@ const Navbar = () => {
   const { items: localCartItems } = useSelector((state) => state.cart);
 
   // API queries
-  const { data: allProducts = {}, error: productsError } =
-    useGetAllProductsQuery();
+  const {
+    data: allProducts = {},
+    error: productsError,
+    refetch,
+  } = useGetAllProductsQuery();
   const { data: apiCart, error: cartError } = useViewCartQuery(undefined, {
     skip: !isAuthenticated,
   });
   const [logoutUser] = useLogoutUserMutation();
-
-  // Handle API errors
-  useEffect(() => {
-    if (productsError) {
-      toast.error(
-        productsError?.data?.message || "Failed to load products for search"
-      );
-    }
-  }, [productsError]);
-
-  useEffect(() => {
-    if (cartError) {
-      toast.error(cartError?.data?.message || "Failed to load cart count");
-    }
-  }, [cartError]);
 
   // Calculate cart count
   const cartItems = isAuthenticated
@@ -89,7 +78,9 @@ const Navbar = () => {
     try {
       await logoutUser().unwrap();
       setModalOpen(false);
-      navigate("/login");
+      dispatch(clearUser());
+      await refetch();
+      return navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error);
       // Force logout anyway
@@ -99,57 +90,71 @@ const Navbar = () => {
   };
 
   return (
-    <div className="flex justify-evenly items-center mt-5 relative">
-      <Link to="/home">
-        <h1 className="font-extrabold text-3xl hidden sm:flex">SHOP.FU</h1>
+    <div className="flex flex-wrap justify-between items-center px-6 py-4 shadow-sm bg-white relative">
+      {/* Logo */}
+      <Link to="/home" className="flex items-center gap-2">
+        <h1 className="font-extrabold text-2xl sm:text-3xl text-gray-900 tracking-tight">
+          SHOP<span className="text-red-500">.FU</span>
+        </h1>
       </Link>
 
-      {/* Search bar */}
-      <div className="relative sm:w-1/3">
+      {/* Search Bar */}
+      <div className="relative w-full sm:w-1/3 mt-3 sm:mt-0">
         <InputField
           type="text"
-          placeholder="Search Here"
+          placeholder="Search products..."
           onChange={(e) => setSearchData(e.target.value)}
-          className="w-full border px-3 py-2 rounded-lg"
+          className="w-full border border-gray-300 px-4 py-2 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-700"
         />
         {searchData && (
-          <div className="absolute bg-white shadow-md mt-2 w-full rounded-md z-10">
+          <div className="absolute bg-white shadow-lg mt-2 w-full rounded-md z-10 max-h-64 overflow-auto">
             {searchedData.length > 0 ? (
               searchedData.map((item) => (
                 <div
                   key={item._id || item.id}
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex justify-between"
+                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex justify-between items-center transition-colors"
                   onClick={() => {
                     navigate(`/product/${item._id || item.id}`);
                     setSearchData("");
                   }}
                 >
-                  <span>{item.title || item.name}</span>
+                  <span className="text-sm font-medium text-gray-800">
+                    {item.title || item.name}
+                  </span>
                   <img
                     src={item.image?.secureUrl || item.photo || item.image}
-                    className="h-10 w-8 object-contain"
+                    className="h-8 w-8 object-contain"
                     alt={item.title || item.name}
                   />
                 </div>
               ))
             ) : (
-              <p className="p-3 text-gray-500 text-sm">No results found</p>
+              <p className="p-3 text-gray-500 text-sm text-center">
+                No results found
+              </p>
             )}
           </div>
         )}
       </div>
 
       {/* Icons */}
-      <div className="flex gap-2 items-center">
+      <div className="flex items-center gap-2 sm:gap-4 mt-3 sm:mt-0">
         {isAuthenticated ? (
           <>
-            <Link to="/orders" className="text-2xl hover:underline">
-              <RiGiftFill />
+            <Link
+              to="/orders"
+              className="hover:text-gray-900 transition-colors"
+            >
+              <RiGiftFill className="sm:text-2xl text-xl text-gray-700" />
             </Link>
-            <Link to="/cart" className="relative">
-              <IoCartSharp className="text-2xl text-gray-700 hover:text-black cursor-pointer" />
+
+            <Link
+              to="/cart"
+              className="relative hover:text-gray-900 transition-colors"
+            >
+              <IoCartSharp className="sm:text-2xl text-xl text-gray-700" />
               {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-semibold rounded-full w-5 h-5 flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-light md:font-semibold rounded-full w-4 h-4 flex items-center justify-center">
                   {cartCount}
                 </span>
               )}
@@ -157,7 +162,7 @@ const Navbar = () => {
 
             <FaUserCircle
               onClick={() => setModalOpen(true)}
-              className="text-2xl text-gray-700 hover:text-black cursor-pointer"
+              className="sm:text-2xl text-xl text-gray-700 hover:text-gray-900 cursor-pointer transition-colors"
             />
 
             <UserLogoutModal
@@ -167,17 +172,16 @@ const Navbar = () => {
             />
           </>
         ) : (
-          <div className="flex items-center ml-1 sm:ml-0 gap-1">
-            <Link to="/login">
-              <Button
-                text="Login"
-                className="bg-black text-xs text-white px-4 py-2 rounded-lg"
-              />
-            </Link>
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={() => navigate("/login")}
+              text="Login"
+              className="bg-gray-900 text-white px-4 py-2 text-sm rounded-full hover:bg-gray-800 transition-colors"
+            />
             <Link to="/signup">
               <Button
                 text="Sign Up"
-                className="bg-gray-200 text-black! px-2 py-2 rounded-lg text-xs truncate"
+                className="bg-gray-200 text-gray-800 px-4 py-2 text-sm rounded-full hover:bg-gray-300 transition-colors"
               />
             </Link>
           </div>

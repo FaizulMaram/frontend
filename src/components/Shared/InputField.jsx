@@ -1,7 +1,7 @@
 export const InputField = ({
   label,
   type,
-  name,
+  name = "inputField",
   value,
   onChange,
   placeholder,
@@ -9,8 +9,11 @@ export const InputField = ({
 }) => {
   return (
     <div className="mb-4">
-      <label className="block text-gray-700 text-sm mb-2">{label}</label>
+      <label htmlFor={name} className="block text-gray-700 text-sm mb-2">
+        {label}
+      </label>
       <input
+        id={name}
         type={type}
         name={name}
         value={value}

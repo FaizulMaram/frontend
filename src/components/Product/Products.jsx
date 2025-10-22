@@ -11,7 +11,11 @@ import { useEffect } from "react";
 const Products = () => {
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((state) => state.auth);
-  const { data: productsData, isLoading, error } = useGetAllProductsQuery();
+  const {
+    data: productsData,
+    isLoading,
+    error,
+  } = useGetAllProductsQuery({}, { skip: !isAuthenticated });
   const [addToCartAPI] = useAddToCartMutation();
 
   // Handle API errors

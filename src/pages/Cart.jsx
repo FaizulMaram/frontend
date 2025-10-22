@@ -1,6 +1,10 @@
 import { useSelector, useDispatch } from "react-redux";
 import { removeFromCart, clearCart } from "../redux/slices/cartSlice";
-import { useViewCartQuery, useRemoveFromCartMutation, useDeleteCartMutation } from "../redux/apis/cartApi";
+import {
+  useViewCartQuery,
+  useRemoveFromCartMutation,
+  useDeleteCartMutation,
+} from "../redux/apis/cartApi";
 import Navbar from "../components/Navbar/Navbar";
 import { Button } from "../components/Shared/Button";
 import { MdDelete } from "react-icons/md";
@@ -11,7 +15,11 @@ import { useEffect } from "react";
 const Cart = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
   const { items: localItems } = useSelector((state) => state.cart);
-  const { data: apiCart, isLoading, error } = useViewCartQuery(undefined, {
+  const {
+    data: apiCart,
+    isLoading,
+    error,
+  } = useViewCartQuery(undefined, {
     skip: !isAuthenticated,
   });
   const [removeFromCartAPI] = useRemoveFromCartMutation();
@@ -27,12 +35,12 @@ const Cart = () => {
 
   // Use API cart if authenticated, otherwise use local cart
   const items = isAuthenticated ? apiCart?.cart?.products || [] : localItems;
-  
+
   const totalBill = items
     .reduce((acc, item) => {
       const price = item.product?.price || item.productId?.price || item.price;
       const quantity = item.quantity || item.qty;
-      return acc + (price * quantity);
+      return acc + price * quantity;
     }, 0)
     .toFixed(2);
 
@@ -40,8 +48,8 @@ const Cart = () => {
     if (isAuthenticated) {
       try {
         // For API cart, send the product ID to remove the item
-        await removeFromCartAPI({ 
-          productId: item.product._id 
+        await removeFromCartAPI({
+          productId: item.product._id,
         }).unwrap();
         toast.success("Item removed from cart");
       } catch (error) {
@@ -113,22 +121,33 @@ const Cart = () => {
               const product = isAuthenticated ? item.product : item;
               const itemId = item._id || item.id;
               const itemKey = itemId || index;
-              
+
               return (
                 <div key={itemKey} className="flex justify-between mb-4">
                   <div className="flex gap-4 items-center">
-                    <img 
-                      src={product.image?.secureUrl || product.photo || product.image || item.image} 
-                      className="w-20 h-20 object-contain" 
-                      alt={product.name || product.title || item.title}
+                    <img
+                      src={
+                        product?.image?.secureUrl ||
+                        product?.photo ||
+                        product?.image ||
+                        item.image
+                      }
+                      className="w-20 h-20 object-contain"
+                      alt={product?.name || product?.title || item.title}
                     />
                     <div className="overflow-hidden">
-                      <p>{product.name || product.title || item.title}</p>
+                      <p>{product?.name || product?.title || item.title}</p>
                       <p>Qty: {item.quantity || item.qty}</p>
                     </div>
                   </div>
                   <div className="flex justify-center gap-3 items-center text-center">
-                    <p>${((product.price || item.price) * (item.quantity || item.qty)).toFixed(2)}</p>
+                    <p>
+                      $
+                      {(
+                        (product?.price || item.price) *
+                        (item.quantity || item.qty)
+                      ).toFixed(2)}
+                    </p>
                     <MdDelete
                       onClick={() => handleRemoveItem(item)}
                       className="text-red-500 text-2xl cursor-pointer"

@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import Navbar from "../components/Navbar/Navbar";
 import BackPage from "../components/Shared/BackPage";
+import { GradientSpinner } from "../components/Shared/GradientSpinner";
 import { Button } from "../components/Shared/Button";
 import { useGetSingleProductQuery } from "../redux/apis/productApi";
 import { useAddToCartMutation } from "../redux/apis/cartApi";
@@ -28,12 +29,12 @@ const ProductDetail = () => {
 
   const handleAddToCart = async () => {
     if (!product) return;
-    
+
     if (isAuthenticated) {
       try {
-        await addToCartAPI({ 
-          productId: product._id, 
-          quantity: 1 
+        await addToCartAPI({
+          productId: product._id,
+          quantity: 1,
         }).unwrap();
         toast.success("Product added to cart!");
       } catch (error) {
@@ -49,8 +50,8 @@ const ProductDetail = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen text-gray-500">
-        Loading product...
+      <div className="flex justify-center items-center h-screen">
+        <GradientSpinner />
       </div>
     );
   }
