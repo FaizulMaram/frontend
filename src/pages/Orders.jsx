@@ -41,7 +41,7 @@ const Orders = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-5xl">
+    <div className="container mx-auto px-4 py-8 max-w-6xl">
       <BackPage text="Back" to="/home" />
       <h1 className="text-3xl md:text-4xl font-bold mb-8 text-center md:text-left">
         My Orders
@@ -52,58 +52,67 @@ const Orders = () => {
           <p className="text-gray-500 text-lg">No orders found</p>
         </div>
       ) : (
-        <div className="space-y-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {orders.map((order) => (
             <div
               key={order._id}
-              className="border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200 bg-white"
+              className="border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow duration-200 bg-white"
             >
-              <div className="flex flex-col md:flex-row justify-between md:items-start gap-4 mb-4">
-                <div className="space-y-1">
-                  <h3 className="text-lg font-semibold text-gray-800">
-                    Order #{order._id}
-                  </h3>
-                  <p className="text-gray-600 text-sm">
-                    <span className="font-medium">Date:</span>{" "}
-                    {new Date(order.createdAt).toLocaleDateString()}
-                  </p>
-                  <p className="text-gray-600 text-sm">
-                    <span className="font-medium">Status:</span> {order.status}
-                  </p>
-                  <p className="text-gray-600 text-sm">
-                    <span className="font-medium">Address:</span>{" "}
-                    {order.address}, {order.city}
-                  </p>
-                  <p className="text-gray-600 text-sm">
-                    <span className="font-medium">Phone:</span>{" "}
-                    {order.phoneNumber}
-                  </p>
-                </div>
+              {/* Order info */}
+              <div className="flex flex-col gap-2 mb-3">
+                <h3 className="text-md font-semibold truncate text-gray-800">
+                  Order #{order._id}
+                </h3>
+                <p className="text-gray-600 text-sm">
+                  <span className="font-medium">Date:</span>{" "}
+                  {new Date(order.createdAt).toLocaleDateString()}
+                </p>
+                <p className="text-gray-600 text-sm">
+                  <span className="font-medium">Status:</span> {order.status}
+                </p>
+              </div>
+
+              {/* Product image + total price */}
+              <div className="flex justify-between items-center mb-3">
+                {order.products?.[0]?.product?.image?.secureUrl ? (
+                  <img
+                    src={order.products[0].product.image.secureUrl}
+                    alt={order.products[0].product.name}
+                    className="w-16 h-16 object-contain rounded-md"
+                  />
+                ) : (
+                  <div className="w-16 h-16 bg-gray-100 flex items-center justify-center rounded-md text-gray-400 text-xs">
+                    No Image
+                  </div>
+                )}
 
                 <div className="flex flex-col items-end">
-                  <p className="text-lg font-semibold text-gray-800">
+                  <p className="text-md font-semibold text-gray-800">
                     ${order.totalPrice}
                   </p>
                   {order.status === "Pending" && (
                     <button
                       onClick={() => handleCancelOrder(order._id)}
-                      className="mt-2 px-4 py-2 bg-red-500 text-white rounded-lg text-sm hover:bg-red-600 transition-colors duration-200"
+                      className="mt-1 px-3 py-1 bg-red-500 text-white rounded-md text-sm hover:bg-red-600 transition-colors duration-200"
                     >
-                      Cancel Order
+                      Cancel
                     </button>
                   )}
                 </div>
               </div>
 
-              <div className="border-t border-gray-200 pt-4">
-                <h4 className="font-medium text-gray-800 mb-2">Items:</h4>
-                <div className="divide-y divide-gray-100">
+              {/* Items list */}
+              <div className="border-t border-gray-200 pt-2">
+                <h4 className="font-medium text-gray-800 mb-1 text-sm">
+                  Items:
+                </h4>
+                <div className="divide-y divide-gray-100 text-sm">
                   {order.products?.map((item, index) => (
                     <div
                       key={index}
-                      className="flex justify-between py-2 text-sm sm:text-base"
+                      className="flex justify-between py-1 items-center"
                     >
-                      <span className="text-gray-700">
+                      <span className="text-gray-700 truncate">
                         {item.product?.name}{" "}
                         <span className="text-gray-500">
                           (x{item.quantity})

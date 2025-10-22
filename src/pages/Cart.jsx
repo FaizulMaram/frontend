@@ -50,11 +50,14 @@ const Cart = () => {
     if (isAuthenticated) {
       try {
         setRemovingId(item.product._id); // disable delete btn
-        await removeFromCartAPI({ productId: item.product._id }).unwrap();
-        await refetch();
-        toast.success("Item removed from cart");
+        const res = await removeFromCartAPI({
+          productId: item.product._id,
+        }).unwrap();
+        if (res.success) {
+          toast.success(res.message);
+        }
       } catch (error) {
-        toast.error("Failed to remove item");
+        toast.error(error?.data?.message || "Failed to remove item");
       } finally {
         setRemovingId(null);
       }

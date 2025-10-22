@@ -95,82 +95,30 @@ const Checkout = () => {
 
   return (
     <>
-      <div className="max-w-3xl mx-auto px-5 py-10">
-        <BackPage to="/cart" text="Back" />
-        <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">
-          Checkout
-        </h1>
+      <div className="max-w-6xl mx-auto px-5 py-10">
+        <div className="mb-6">
+          <BackPage to="/cart" text="Back" />
+        </div>
 
-        <form
-          onSubmit={handleCheckout}
-          className="bg-white p-8 rounded-2xl shadow-md space-y-5"
-        >
-          <InputField
-            type="text"
-            name="email"
-            label="Email"
-            placeholder="Email Address"
-            value={formData.email}
-            onChange={handleChange}
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="bg-white p-6 rounded-2xl shadow-md h-fit">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">
+              Order Summary
+            </h2>
 
-          <InputField
-            type="text"
-            name="address"
-            label="Address"
-            placeholder="House number, street number, area"
-            value={formData.address}
-            onChange={handleChange}
-          />
-
-          <InputField
-            type="text"
-            name="apt"
-            label="Apt, Suite, Unit, Building (optional)"
-            placeholder="Apt, Suite, Unit, Building (optional)"
-            value={formData.apt}
-            onChange={handleChange}
-          />
-
-          <InputField
-            type="text"
-            name="city"
-            label="City"
-            placeholder="Enter City"
-            value={formData.city}
-            onChange={handleChange}
-          />
-
-          <InputField
-            type="number"
-            name="zip"
-            label="Zip"
-            placeholder="Enter Zip Code"
-            value={formData.zip}
-            onChange={handleChange}
-          />
-
-          <InputField
-            type="tel"
-            name="phone"
-            label="Phone Number"
-            placeholder="Enter Phone Number"
-            value={formData.phone}
-            onChange={handleChange}
-          />
-
-          <div className="bg-gray-50 p-4 rounded-lg mb-4">
-            <h3 className="font-semibold mb-2">Order Summary</h3>
-            <div className="space-y-1">
+            <div className="space-y-2">
               {items.map((item, index) => {
                 const product = isAuthenticated ? item.product : item;
                 return (
-                  <div key={index} className="flex justify-between text-sm">
+                  <div
+                    key={index}
+                    className="flex justify-between items-center text-sm border-b border-gray-100 pb-2"
+                  >
                     <span>
-                      {product.name || product.title} x{" "}
+                      {product.name || product.title} x
                       {item.quantity || item.qty}
                     </span>
-                    <span>
+                    <span className="font-medium">
                       $
                       {(
                         (product.price || item.price) *
@@ -180,22 +128,88 @@ const Checkout = () => {
                   </div>
                 );
               })}
-              <hr className="my-2" />
-              <div className="flex justify-between font-semibold">
-                <span>Total: ${totalAmount}</span>
+
+              <div className="flex justify-between font-semibold text-lg mt-4 pt-3 border-t">
+                <span>Total</span>
+                <span>${totalAmount}</span>
               </div>
             </div>
           </div>
+          {/* Right: Checkout Form */}
+          <form
+            onSubmit={handleCheckout}
+            className="bg-white p-6 rounded-2xl shadow-md space-y-4"
+          >
+            <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">
+              Checkout
+            </h2>
 
-          <div className="pt-4 text-center">
-            <Button
-              type="submit"
-              text={isLoading ? "Placing Order..." : "Place Order"}
-              className="bg-black text-white px-8 py-3 rounded-lg hover:bg-gray-800 transition duration-200"
-              disabled={isLoading}
+            <InputField
+              type="text"
+              name="email"
+              label="Email"
+              placeholder="Email Address"
+              value={formData.email}
+              onChange={handleChange}
             />
-          </div>
-        </form>
+
+            <InputField
+              type="text"
+              name="address"
+              label="Address"
+              placeholder="House number, street number, area"
+              value={formData.address}
+              onChange={handleChange}
+            />
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <InputField
+                type="text"
+                name="apt"
+                label="Apt / Suite (optional)"
+                placeholder="Apt, Suite, Unit"
+                value={formData.apt}
+                onChange={handleChange}
+              />
+              <InputField
+                type="text"
+                name="city"
+                label="City"
+                placeholder="Enter City"
+                value={formData.city}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <InputField
+                type="number"
+                name="zip"
+                label="Zip"
+                placeholder="Enter Zip Code"
+                value={formData.zip}
+                onChange={handleChange}
+              />
+              <InputField
+                type="tel"
+                name="phone"
+                label="Phone Number"
+                placeholder="Enter Phone Number"
+                value={formData.phone}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="pt-4 text-center">
+              <Button
+                type="submit"
+                text={isLoading ? "Placing Order..." : "Place Order"}
+                className="bg-black text-white px-8 py-3 rounded-lg hover:bg-gray-800 transition duration-200 w-full"
+                disabled={isLoading}
+              />
+            </div>
+          </form>
+        </div>
       </div>
     </>
   );
