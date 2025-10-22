@@ -67,8 +67,17 @@ const Orders = () => {
                   <span className="font-medium">Date:</span>{" "}
                   {new Date(order.createdAt).toLocaleDateString()}
                 </p>
-                <p className="text-gray-600 text-sm">
-                  <span className="font-medium">Status:</span> {order.status}
+                <p
+                  className={`text-sm font-medium ${
+                    order.status === "Pending"
+                      ? "text-blue-700"
+                      : order.status === "Cancelled"
+                      ? "text-red-500"
+                      : "text-gray-600"
+                  }`}
+                >
+                  <span className="text-black">Status: </span>
+                  {order.status}
                 </p>
               </div>
 
