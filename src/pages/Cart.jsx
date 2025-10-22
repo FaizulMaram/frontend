@@ -10,7 +10,7 @@ import { Button } from "../components/Shared/Button";
 import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const Cart = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -22,6 +22,8 @@ const Cart = () => {
   } = useViewCartQuery(undefined, {
     skip: !isAuthenticated,
   });
+  const [removingId, setRemovingId] = useState(null);
+
   const [removeFromCartAPI] = useRemoveFromCartMutation();
   const [deleteCartAPI] = useDeleteCartMutation();
   const dispatch = useDispatch();
@@ -47,14 +49,14 @@ const Cart = () => {
   const handleRemoveItem = async (item) => {
     if (isAuthenticated) {
       try {
-        // For API cart, send the product ID to remove the item
-        await removeFromCartAPI({
-          productId: item.product._id,
-        }).unwrap();
+        setRemovingId(item.product._id); // disable delete btn
+        await removeFromCartAPI({ productId: item.product._id }).unwrap();
+        await refetch();
         toast.success("Item removed from cart");
       } catch (error) {
-        console.error("Failed to remove item:", error);
         toast.error("Failed to remove item");
+      } finally {
+        setRemovingId(null);
       }
     } else {
       dispatch(removeFromCart(item.id));
@@ -149,8 +151,17 @@ const Cart = () => {
                       ).toFixed(2)}
                     </p>
                     <MdDelete
-                      onClick={() => handleRemoveItem(item)}
-                      className="text-red-500 text-2xl cursor-pointer"
+                      onClick={() => {
+                        if (removingId !== item.product._id)
+                          handleRemoveItem(item);
+                      }}
+                      className={`text-2xl cursor-pointer transition 
+    ${
+      removingId === item.product._id
+        ? "text-gray-400 cursor-not-allowed"
+        : "text-red-500 hover:text-red-600"
+    }
+  `}
                     />
                   </div>
                 </div>
