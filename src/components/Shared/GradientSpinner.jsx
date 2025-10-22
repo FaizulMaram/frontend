@@ -1,26 +1,68 @@
 export const GradientSpinner = () => {
   return (
-    <div className="relative top-1/2 left-1/2 h-24 w-24 rounded-full bg-gradient-to-b from-[#9b59b6] via-[#84cdfa] to-[#5ad1cd] animate-rotate_3922">
-      <span className="absolute h-full w-full rounded-full bg-gradient-to-b from-[#9b59b6] via-[#84cdfa] to-[#5ad1cd] blur-[5px]" />
-      <span className="absolute h-full w-full rounded-full bg-gradient-to-b from-[#9b59b6] via-[#84cdfa] to-[#5ad1cd] blur-[10px]" />
-      <span className="absolute h-full w-full rounded-full bg-gradient-to-b from-[#9b59b6] via-[#84cdfa] to-[#5ad1cd] blur-[25px]" />
-      <span className="absolute h-full w-full rounded-full bg-gradient-to-b from-[#9b59b6] via-[#84cdfa] to-[#5ad1cd] blur-[50px]" />
-      <div className="absolute inset-[10px] rounded-full border-[5px] border-white bg-white"></div>
+    <div className="relative inline-block h-[35px] w-[35px] animate-spin78236">
+      <div className="absolute h-full w-[30%] bottom-[5%] left-0 origin-[50%_85%] rotate-[60deg]">
+        <div className="absolute bottom-0 left-0 w-full pb-full bg-[#5D3FD3] rounded-full animate-wobble1 delay-[-0.3s]" />
+      </div>
+
+      <div className="absolute h-full w-[30%] bottom-[5%] right-0 origin-[50%_85%] -rotate-[60deg]">
+        <div className="absolute bottom-0 left-0 w-full pb-full bg-[#5D3FD3] rounded-full animate-wobble1 delay-[-0.15s]" />
+      </div>
+
+      <div className="absolute h-full w-[30%] bottom-[-5%] left-0 translate-x-[116.666%]">
+        <div className="absolute top-0 left-0 w-full pb-full bg-[#5D3FD3] rounded-full animate-wobble2" />
+      </div>
 
       <style>{`
-        @keyframes rotate_3922 {
-          from {
-            transform: translate(-50%, -50%) rotate(0deg);
+        @keyframes spin78236 {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+
+        @keyframes wobble1 {
+          0%, 100% {
+            transform: translateY(0%) scale(1);
+            opacity: 1;
           }
-          to {
-            transform: translate(-50%, -50%) rotate(360deg);
+          50% {
+            transform: translateY(-66%) scale(0.65);
+            opacity: 0.8;
           }
         }
 
-        .animate-rotate_3922 {
-          animation: rotate_3922 1.2s linear infinite;
-          position: absolute;
-          transform: translate(-50%, -50%);
+        @keyframes wobble2 {
+          0%, 100% {
+            transform: translateY(0%) scale(1);
+            opacity: 1;
+          }
+          50% {
+            transform: translateY(66%) scale(0.65);
+            opacity: 0.8;
+          }
+        }
+
+        .animate-spin78236 {
+          animation: spin78236 2s linear infinite;
+        }
+
+        .animate-wobble1 {
+          animation: wobble1 0.8s ease-in-out infinite;
+        }
+
+        .animate-wobble2 {
+          animation: wobble2 0.8s ease-in-out infinite;
+        }
+
+        .delay-[-0.3s] {
+          animation-delay: -0.3s;
+        }
+
+        .delay-[-0.15s] {
+          animation-delay: -0.15s;
+        }
+
+        .pb-full {
+          padding-bottom: 100%;
         }
       `}</style>
     </div>
