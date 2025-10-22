@@ -72,7 +72,7 @@ const Orders = () => {
                 </p>
               </div>
 
-              {/* Product image + total price */}
+              {/* Product image & total price */}
               <div className="flex justify-between items-center mb-3">
                 {order.products?.[0]?.product?.image?.secureUrl ? (
                   <img
