@@ -101,41 +101,7 @@ const Checkout = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-white p-6 rounded-2xl shadow-md h-fit">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">
-              Order Summary
-            </h2>
-
-            <div className="space-y-2">
-              {items.map((item, index) => {
-                const product = isAuthenticated ? item.product : item;
-                return (
-                  <div
-                    key={index}
-                    className="flex justify-between items-center text-sm border-b border-gray-100 pb-2"
-                  >
-                    <span>
-                      {product.name || product.title} x
-                      {item.quantity || item.qty}
-                    </span>
-                    <span className="font-medium">
-                      $
-                      {(
-                        (product.price || item.price) *
-                        (item.quantity || item.qty)
-                      ).toFixed(2)}
-                    </span>
-                  </div>
-                );
-              })}
-
-              <div className="flex justify-between font-semibold text-lg mt-4 pt-3 border-t">
-                <span>Total</span>
-                <span>${totalAmount}</span>
-              </div>
-            </div>
-          </div>
-          {/* Right: Checkout Form */}
+          {/* Checkout Form */}
           <form
             onSubmit={handleCheckout}
             className="bg-white p-6 rounded-2xl shadow-md space-y-4"
@@ -209,6 +175,42 @@ const Checkout = () => {
               />
             </div>
           </form>
+
+          {/* Order Summary */}
+          <div className="bg-white p-6 rounded-2xl shadow-md h-fit">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">
+              Order Summary
+            </h2>
+
+            <div className="space-y-2">
+              {items.map((item, index) => {
+                const product = isAuthenticated ? item.product : item;
+                return (
+                  <div
+                    key={index}
+                    className="flex justify-between items-center text-sm border-b border-gray-100 pb-2"
+                  >
+                    <span>
+                      {product.name || product.title} x
+                      {item.quantity || item.qty}
+                    </span>
+                    <span className="font-medium">
+                      $
+                      {(
+                        (product.price || item.price) *
+                        (item.quantity || item.qty)
+                      ).toFixed(2)}
+                    </span>
+                  </div>
+                );
+              })}
+
+              <div className="flex justify-between font-semibold text-lg mt-4 pt-3 border-t">
+                <span>Total</span>
+                <span>${totalAmount}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </>
