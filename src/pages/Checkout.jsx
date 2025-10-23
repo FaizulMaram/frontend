@@ -4,10 +4,15 @@ import { useNavigate } from "react-router-dom";
 import { InputField } from "../components/Shared/InputField";
 import { Button } from "../components/Shared/Button";
 import BackPage from "../components/Shared/BackPage";
-import { usePlaceOrderMutation } from "../redux/apis/orderApi";
+import {
+  useCreatePaymentIntentMutation,
+  usePlaceOrderMutation,
+} from "../redux/apis/orderApi";
 import { useViewCartQuery } from "../redux/apis/cartApi";
 import { toast } from "sonner";
 import { useEffect } from "react";
+import { createPaymentIntent } from "../../../backend/controllers/payment.controller";
+import Stripe from "stripe";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -19,6 +24,7 @@ const Checkout = () => {
     skip: !isAuthenticated,
   });
   const [placeOrder, { isLoading }] = usePlaceOrderMutation();
+  const [createPaymentIntent] = useCreatePaymentIntentMutation();
 
   // Handle API errors
   useEffect(() => {
@@ -84,11 +90,38 @@ const Checkout = () => {
         phoneNumber: formData.phone,
       };
 
-      await placeOrder(orderData).unwrap();
+      //payment
+      const result = await placeOrder(orderData).unwrap();
+      // console.log("Result: ", result);
+      const orderId = result?.data?.order?._id || result?.order?._id;
+      console.log("Payment order id: ", orderId);
+
+      //create payment
+      const clientSecret = await createPaymentIntent({
+        orderId,
+        amount: totalAmount,
+      }).unwrap();
+      //open stripe modal and confirm payment
+      const { paymentIntent, error } = await stripe.confirmCardPayment(
+        clientSecret,
+        {
+          payment_method: {
+            card: cardElement,
+            billing_details: { email: formData.email },
+          },
+        }
+      );
+
+      if (error) {
+        toast.error(error.message);
+      } else if (paymentIntent.status === "succeeded") {
+        toast.success("payment successfull!");
+        navigate("/orders");
+      }
+      // await placeOrder(orderData).unwrap();
       toast.success("Order placed successfully!");
-      navigate("/orders");
-    } catch (error) {
-      console.error("Failed to place order:", error);
+    } catch (err) {
+      console.error("Failed to place order:", err);
       toast.error("Failed to place order. Please try again.");
     }
   };
